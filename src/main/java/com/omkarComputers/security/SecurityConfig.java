@@ -12,6 +12,7 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
+
         return new BCryptPasswordEncoder();
     }
 
@@ -21,9 +22,36 @@ public class SecurityConfig {
 
         http
             .csrf(csrf -> csrf.disable())
+
             .authorizeHttpRequests(auth -> auth
-                    .anyRequest().permitAll())
-            .formLogin(form -> form.disable());
+
+                .requestMatchers(
+                        "/",
+                        "/login",
+                        "/register",
+                        "/saveStudent")
+                .permitAll()
+
+                .requestMatchers("/admin/**")
+                .hasRole("ADMIN")
+
+                .requestMatchers("/student/**")
+                .hasAnyRole("STUDENT", "ADMIN")
+
+                .anyRequest()
+                .authenticated()
+            )
+
+            .formLogin(form -> form
+                    .loginPage("/login")
+                    .defaultSuccessUrl("/admin/dashboard", true)
+                    .permitAll()
+            )
+
+            .logout(logout -> logout
+                    .logoutSuccessUrl("/login?logout")
+                    .permitAll()
+            );
 
         return http.build();
     }

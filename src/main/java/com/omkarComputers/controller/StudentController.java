@@ -38,6 +38,12 @@ public class StudentController {
     private PasswordEncoder passwordEncoder;
 
 
+    @GetMapping("/student/dashboard")
+    public String studentDashboard() {
+
+        return "student-dashboard";
+    }
+    
     // Student Registration Page
     @GetMapping("/register")
     public String registerForm(Model model) {

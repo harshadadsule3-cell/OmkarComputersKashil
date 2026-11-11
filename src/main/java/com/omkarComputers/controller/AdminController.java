@@ -32,7 +32,6 @@ public class AdminController {
     @Autowired
     private ScoreService scoreService;
     @Autowired
-    
     private StudentRepository studentRepository;
 
     @Autowired
