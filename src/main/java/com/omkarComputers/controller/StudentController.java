@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.omkarComputers.Entity.Course;
 import com.omkarComputers.Entity.Enrollment;
 import com.omkarComputers.Entity.Student;
+import com.omkarComputers.repository.EnrollmentRepository;
 import com.omkarComputers.service.CourseService;
 import com.omkarComputers.service.EnrollmentService;
 import com.omkarComputers.service.ScoreService;
@@ -36,6 +37,9 @@ public class StudentController {
     
     @Autowired
     private PasswordEncoder passwordEncoder;
+    
+    @Autowired
+    private EnrollmentRepository enrollmentRepository;
 
 
     @GetMapping("/student/dashboard")
@@ -65,7 +69,7 @@ public class StudentController {
 
         studentService.saveStudent(student);
 
-        return "redirect:/admin/dashboard";
+        return "redirect:/login";
     }
 
     // View Available Courses
@@ -78,13 +82,15 @@ public class StudentController {
         return "student-courses";
     }
 
-    // Enroll Course
     @GetMapping("/enroll/{courseId}")
-    public String enrollCourse(@PathVariable Long courseId) {
+    public String enrollCourse(@PathVariable Long courseId,
+                               java.security.Principal principal) {
 
-        Student student = studentService.getStudentById(1L);
+        Student student =
+                studentService.findByEmail(principal.getName());
 
-        Course course = courseService.getCourseById(courseId);
+        Course course =
+                courseService.getCourseById(courseId);
 
         Enrollment enrollment = new Enrollment();
 
@@ -97,22 +103,35 @@ public class StudentController {
         return "redirect:/student/myCourses";
     }
 
-    // View Enrolled Courses
     @GetMapping("/student/myCourses")
-    public String myCourses(Model model) {
+    public String myCourses(Model model,
+            java.security.Principal principal) {
 
-        model.addAttribute("enrollments",
-                enrollmentService.getAllEnrollments());
+        Student student =
+                studentService
+                .findByEmail(principal.getName());
+
+        model.addAttribute(
+                "enrollments",
+                enrollmentRepository
+                .findByStudentId(student.getId()));
 
         return "my-courses";
     }
 
     // View Student Scores
     @GetMapping("/student/scores")
-    public String studentScores(Model model) {
+    public String studentScores(Model model,
+            java.security.Principal principal) {
 
-        model.addAttribute("scores",
-                scoreService.getAllScores());
+        Student student =
+                studentService
+                .findByEmail(principal.getName());
+
+        model.addAttribute(
+                "scores",
+                scoreService.getScoresByStudentId(
+                        student.getId()));
 
         return "student-scores";
     }

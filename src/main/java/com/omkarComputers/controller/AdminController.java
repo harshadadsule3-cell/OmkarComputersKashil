@@ -228,6 +228,30 @@ public class AdminController {
 
         return "enrollments";
     }
+    @GetMapping("/searchStudent")
+    public String searchStudent(
+            @RequestParam("keyword") String keyword,
+            Model model) {
+
+        model.addAttribute(
+                "students",
+                studentService.searchStudent(keyword));
+
+        model.addAttribute("studentCount",
+                studentRepository.count());
+
+        model.addAttribute("courseCount",
+                courseRepository.count());
+
+        model.addAttribute("enrollmentCount",
+                enrollmentRepository.count());
+
+        model.addAttribute("scoreCount",
+                scoreRepository.count());
+
+        return "admin-dashboard";
+    }
+
    
 }
 

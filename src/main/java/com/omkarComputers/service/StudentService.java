@@ -33,4 +33,17 @@ public class StudentService {
     public void deleteStudent(Long id) {
         studentRepository.deleteById(id);
     }
+    
+    public Student findByEmail(String email) {
+
+        return studentRepository
+                .findByEmail(email)
+                .orElse(null);
+    }
+    
+    public List<Student> searchStudent(String firstName) {
+
+        return studentRepository
+                .findByFirstNameContainingIgnoreCase(firstName);
+    }
 }

@@ -10,6 +10,12 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
+    private final LoginSuccessHandler loginSuccessHandler;
+
+    public SecurityConfig(LoginSuccessHandler loginSuccessHandler) {
+        this.loginSuccessHandler = loginSuccessHandler;
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
 
@@ -44,7 +50,7 @@ public class SecurityConfig {
 
             .formLogin(form -> form
                     .loginPage("/login")
-                    .defaultSuccessUrl("/admin/dashboard", true)
+                    .successHandler(loginSuccessHandler)
                     .permitAll()
             )
 

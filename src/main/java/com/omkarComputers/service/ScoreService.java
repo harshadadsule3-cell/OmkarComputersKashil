@@ -36,5 +36,10 @@ public class ScoreService {
                 .findById(id)
                 .orElse(null);
     }
+    public List<Score> getScoresByStudentId(Long studentId) {
+
+        return scoreRepository.findByStudentId(studentId);
+    }
+
 }
 
